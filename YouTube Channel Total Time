@@ -1,0 +1,41 @@
+from selenium import webdriver
+from bs4 import BeautifulSoup
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium import webdriver
+from bs4 import BeautifulSoup
+total_seconds = 0
+driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(ChromeDriverManager().install())
+url="***********Here You can Put the URL of the YouTube Channel**********" #in Double quotes there must be only url not estaric that are use by to highlight the line
+MainURL = url+"/videos"
+driver.get(MainURL)
+page = driver.page_source
+soup = BeautifulSoup(page, 'html.parser')
+All_Time_Tags = soup.find_all('span', class_='ytd-thumbnail-overlay-time-status-renderer')
+for tag in All_Time_Tags:
+    raw = tag.text
+    time = raw.replace("\n", " ")
+    colon_count = time.count(':')
+    if colon_count==2:
+        pos_h         = time.find(":")
+        str_h         = time[0:pos_h]
+        hours         = int(str_h)*3600
+        str_m         = time[pos_h+1:pos_h+3]
+        minutes       = int(str_m)*60
+        str_s         = time[pos_h+4:pos_h+6]
+        seconds       = int(str_s)
+        total_seconds += hours+minutes+seconds
+    elif colon_count==1:
+        pos_h         = time.find(":")
+        str_h         = time[0:pos_h]
+        hours         = int(str_h)*60
+        str_m         = time[pos_h+1:pos_h+3]
+        minutes       = int(str_m)
+        total_seconds += hours+minutes
+seconds = total_seconds
+seconds = seconds % (24 * 3600)
+hour = seconds // 3600
+seconds %= 3600
+minutes = seconds // 60
+seconds %= 60
+print( f"The Total time of all Videos on Channel is {hour} Hours , {minutes} Minutes and {seconds} Seconds")
